@@ -28,6 +28,14 @@ def read_widget_request():
         return None
 
 def main():
+    parser = argparse.ArgumentParser(description="Widget Request Consumer")
+    parser.add_argument("--storage", choices=["s3", "dynamodb"], default="s3", help="Storage strategy (s3 or dynamodb)")
+
+    widget_request = read_widget_request()
+    if widget_request:
+        process_widget_request(widget_request)
+    else:
+        time.sleep(POLL_INTERVAL_SECONDS)
 
 
 main()
