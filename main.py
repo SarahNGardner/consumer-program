@@ -18,7 +18,14 @@ def process_widget_request(request):
     s3_client.delete_object(Bucket=BUCKET_2_NAME, Key=request)
 
 def read_widget_request():
+    s3 = boto3.client('s3')
+    response = s3.list_objects(Bucket=BUCKET_2_NAME, MaxKeys=1)
 
+    if 'Contents' in response:
+        request = response['Contents'][0]['Key']
+        return request
+    else:
+        return None
 
 def main():
 
