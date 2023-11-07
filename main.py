@@ -1,6 +1,7 @@
 import time
 import argparse
 import boto3
+import os
 
 # Constants
 POLL_INTERVAL_SECONDS = 0.1  # 100 ms
@@ -8,12 +9,30 @@ BUCKET_2_NAME = "usu-cs5260-red-requests"
 BUCKET_3_NAME = "usu-cs5260-red-web"
 DYNAMODB_TABLE_NAME = "your-dynamodb-table-name"
 
-def process_widget_request(request):
-    s3_client = boto3.client('s3')
-    s3_client.upload_file(request, BUCKET_3_NAME, request)
+aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
+aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(DYNAMODB_TABLE_NAME)
+boto3.setup_default_session(
+    aws_access_key_id=aws_access_key_id,
+    aws_secret_access_key=aws_secret_access_key
+)
+
+def process_widget_request(request, storage_strategy):
+    if storage_strategy == 'dynamodb':
+        dynamodb = boto3.resource('dynamodb')
+        dynamodb.put_item(
+            TableName=DYNAMODB_TABLE_NAME,
+            Item=request
+        )
+
+    elif storage_strategy == 'bucket':
+        s3_client = boto3.client('s3')
+        s3_client.upload_file(request, BUCKET_3_NAME, request)
+
+    else:
+        print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
+
+
 
     s3_client.delete_object(Bucket=BUCKET_2_NAME, Key=request)
 
@@ -26,6 +45,8 @@ def read_widget_request():
         return request
     else:
         return None
+
+
 
 def main():
     parser = argparse.ArgumentParser(description="Widget Request Consumer")
@@ -40,4 +61,5 @@ def main():
             time.sleep(POLL_INTERVAL_SECONDS)
 
 
-main()
+if __name__ == "__main__":
+    main()
