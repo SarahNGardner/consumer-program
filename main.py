@@ -67,6 +67,18 @@ def delete_widget_request(request, storage_strategy):
     else:
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
 
+def change_widget_request(request, updated_attributes, storage_strategy):
+    if storage_strategy == 'dynamodb':
+        dynamodb = boto3.client('dynamodb')
+
+
+    if storage_strategy == 'bucket':
+        s3 = boto3.client('s3')
+
+    else:
+        print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Widget Request Consumer")
     parser.add_argument("--storage", choices=["s3", "dynamodb"], default="s3", help="Storage strategy (s3 or dynamodb)")
