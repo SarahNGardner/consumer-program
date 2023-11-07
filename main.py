@@ -33,8 +33,6 @@ def process_widget_create_request(request, storage_strategy):
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
 
 
-    s3_client.delete_object(Bucket=BUCKET_2_NAME, Key=request)
-
 def read_widget_request():
     s3 = boto3.client('s3')
     response = s3.list_objects(Bucket=BUCKET_2_NAME, MaxKeys=1)
@@ -54,7 +52,7 @@ def main():
     while True:
         widget_request = read_widget_request()
         if widget_request:
-            process_widget_request(widget_request)
+            process_widget_create_request(widget_request)
         else:
             time.sleep(POLL_INTERVAL_SECONDS)
 
