@@ -17,7 +17,7 @@ boto3.setup_default_session(
     aws_secret_access_key=aws_secret_access_key
 )
 
-def process_widget_request(request, storage_strategy):
+def process_widget_create_request(request, storage_strategy):
     s3_client = boto3.client('s3')
     if storage_strategy == 'dynamodb':
         dynamodb = boto3.resource('dynamodb')
@@ -50,7 +50,6 @@ def read_widget_request():
 def main():
     parser = argparse.ArgumentParser(description="Widget Request Consumer")
     parser.add_argument("--storage", choices=["s3", "dynamodb"], default="s3", help="Storage strategy (s3 or dynamodb)")
-    args = parser.parse_args()
 
     while True:
         widget_request = read_widget_request()
