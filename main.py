@@ -18,6 +18,7 @@ boto3.setup_default_session(
 )
 
 def process_widget_request(request, storage_strategy):
+    s3_client = boto3.client('s3')
     if storage_strategy == 'dynamodb':
         dynamodb = boto3.resource('dynamodb')
         dynamodb.put_item(
@@ -26,12 +27,10 @@ def process_widget_request(request, storage_strategy):
         )
 
     elif storage_strategy == 'bucket':
-        s3_client = boto3.client('s3')
         s3_client.upload_file(request, BUCKET_3_NAME, request)
 
     else:
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
-
 
 
     s3_client.delete_object(Bucket=BUCKET_2_NAME, Key=request)
