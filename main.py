@@ -7,7 +7,7 @@ import os
 POLL_INTERVAL_SECONDS = 0.1  # 100 ms
 BUCKET_2_NAME = "usu-cs5260-red-requests"
 BUCKET_3_NAME = "usu-cs5260-red-web"
-DYNAMODB_TABLE_NAME = "your-dynamodb-table-name"
+DYNAMODB_TABLE_NAME = "widgets"
 
 aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
 aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
