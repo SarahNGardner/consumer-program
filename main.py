@@ -67,9 +67,19 @@ def delete_widget_request(request, storage_strategy):
     else:
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
 
-def change_widget_request(request, updated_attributes, storage_strategy):
+def change_widget_request(request, storage_strategy):
     if storage_strategy == 'dynamodb':
         dynamodb = boto3.client('dynamodb')
+        dynamodb.delete_item(
+            TableName=DYNAMODB_TABLE_NAME,
+            Key={'widget_id': {'S': request}}
+        )
+        dynamodb.put_item(
+            TableName=DYNAMODB_TABLE_NAME,
+            Item={
+                'widget_id': {'S': request}
+            }
+        )
 
 
     if storage_strategy == 'bucket':
