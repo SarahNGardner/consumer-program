@@ -64,6 +64,7 @@ def delete_widget_request(request, storage_strategy):
             Key=request
         )
 
+
     else:
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
 
@@ -84,6 +85,11 @@ def change_widget_request(request, storage_strategy):
 
     if storage_strategy == 'bucket':
         s3 = boto3.client('s3')
+        s3.delete_object(
+            Bucket=BUCKET_3_NAME,
+            Key=request
+        )
+        s3.upload_file(request, BUCKET_3_NAME, request)
 
     else:
         print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
