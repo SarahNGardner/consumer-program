@@ -44,6 +44,28 @@ def read_widget_request():
         return None
 
 
+import boto3
+
+
+def delete_widget_request(request, storage_strategy):
+    if storage_strategy == 'dynamodb':
+        dynamodb = boto3.client('dynamodb')
+        dynamodb.delete_item(
+            TableName=DYNAMODB_TABLE_NAME,
+            Key={
+                'widget_id': {'S': request}
+            }
+        )
+
+    if storage_strategy == 'bucket':
+        s3 = boto3.client('s3')
+        s3.delete_object(
+            Bucket=BUCKET_3_NAME,
+            Key=request
+        )
+
+    else:
+        print("Invalid storage strategy. Choose 'dynamodb' or 'bucket'.")
 
 def main():
     parser = argparse.ArgumentParser(description="Widget Request Consumer")
